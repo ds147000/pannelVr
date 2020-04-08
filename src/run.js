@@ -5,23 +5,24 @@ var VR = pannellum.viewer('panorama', {
 
 function hotspot(hotSpotDiv, args) {
     hotSpotDiv.classList.add('custom-tooltip');
-    var a = document.createElement('a');
-    a.innerHTML = args[0];
-    a.href = args[1]
-    hotSpotDiv.appendChild(a);
-    a.style.width = a.scrollWidth - 20 + 'px';
-    a.style.marginLeft = -(a.scrollWidth - hotSpotDiv.offsetWidth) / 2 + 'px';
-    a.style.marginTop = -a.scrollHeight - 12 + 'px';
+    var div = document.createElement('div');
+    div.innerHTML = args[0];
+    hotSpotDiv.appendChild(div);
+    div.style.marginLeft = -(div.scrollWidth - hotSpotDiv.offsetWidth) / 2 + 'px';
+    div.style.marginTop = -div.scrollHeight + 80  + 'px';
+    div.addEventListener('click', function() {
+        alert('报修内容是' + args[1])
+    })
 }
 
 //创建热点
-function addHot(pitch, yaw) {
+function addHot(pitch, yaw, r) {
     VR.addHotSpot({
         "pitch": pitch,
         "yaw": yaw,
         "cssClass": "custom-hotspot",
         "createTooltipFunc": hotspot,
-        "createTooltipArgs": ["维修点", "https://baidu.com"]
+        "createTooltipArgs": ["保修点", r]
     })
 }
 
@@ -34,10 +35,10 @@ VR.on('mousedown', function (e) {
 
 VR.on('mouseup', function (e) {
     if (new Date().getTime() - clickTime < 150) {
-        var r = confirm('在这个位置报修吗？')
+        var r = prompt('请输入保修内容')
         if (r) {
             var hotData = VR.mouseEventToCoords(e)
-            addHot(hotData[0], hotData[1])
+            addHot(hotData[0], hotData[1], r)
         }
     }
 })
